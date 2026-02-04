@@ -194,24 +194,24 @@
             <h2 class="text-3xl font-bold text-center mb-12 section-title">Our Projects</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="bg-gray-800 rounded-lg overflow-hidden card-glow">
-                    <img src="https://placehold.co/600x400/1a202c/ea580c?text=Project+1" alt="Project 1" class="w-full h-48 object-cover">
+                    <img src="https://res.cloudinary.com/dowhvdkjh/image/upload/v1770194907/Screenshot_20260204-124918_ygv1qo.png">
                     <div class="p-6">
                         <h3 class="font-bold text-white text-lg">MediGuid</h3>
-                        <p class="text-gray-400 text-sm mt-2">ML based medical recommendations app based on your symptoms.</p>
+                        <p class="text-gray-400 text-sm mt-2">Custom ML based medical recommendations app based on your symptoms.</p>
                     </div>
                 </div>
                 <div class="bg-gray-800 rounded-lg overflow-hidden card-glow">
-                    <img src="https://placehold.co/600x400/1a202c/ea580c?text=Project+2" alt="Project 2" class="w-full h-48 object-cover">
+                    <img src="https://res.cloudinary.com/dowhvdkjh/image/upload/v1770194908/IMG-20260204-WA0019_tqgrzu.jpg">
                     <div class="p-6">
                         <h3 class="font-bold text-white text-lg"> Smart plant monitoring system </h3>
-                        <p class="text-gray-400 text-sm mt-2">A 5-axis robotic arm for pick and place operations.</p>
+                        <p class="text-gray-400 text-sm mt-2"> A smart plant monitoring system that let's you monitor and control all types of parameters on your phone. </p>
                     </div>
                 </div>
                 <div class="bg-gray-800 rounded-lg overflow-hidden card-glow">
-                    <img src="https://placehold.co/600x400/1a202c/ea580c?text=Project+3" alt="Project 3" class="w-full h-48 object-cover">
+                    <img src="https://res.cloudinary.com/dowhvdkjh/image/upload/v1770195080/IMG_20260116_174159147_kbw425.jpg">
                     <div class="p-6">
-                        <h3 class="font-bold text-white text-lg">AI Chatbot</h3>
-                        <p class="text-gray-400 text-sm mt-2">A customer service chatbot using natural language processing.</p>
+                        <h3 class="font-bold text-white text-lg">Smart water TDS monitoring system</h3>
+                        <p class="text-gray-400 text-sm mt-2"> Smart TDS control system that let's monitor the current TDS of the water and control the water flow accordingly.</p>
                     </div>
                 </div>
             </div>
@@ -225,17 +225,17 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="testimonial-card p-6 rounded-lg text-center">
                     <p class="text-gray-400 italic">"SoftCircuit Solutions delivered my final year project on time with excellent support. The training session was incredibly helpful!"</p>
-                    <p class="mt-4 font-bold text-white">- Rahul Sharma</p>
+                    <p class="mt-4 font-bold text-white">- Rahul Shelke</p>
                     <p class="text-sm text-orange-500">Mechanical Engineering Student</p>
                 </div>
                 <div class="testimonial-card p-6 rounded-lg text-center">
                     <p class="text-gray-400 italic">"I was stuck with my project idea, but their team helped me refine it and build a working prototype. Highly recommended!"</p>
-                    <p class="mt-4 font-bold text-white">- Priya Singh</p>
+                    <p class="mt-4 font-bold text-white">- Kirti Wankhade</p>
                     <p class="text-sm text-orange-500">Computer Science Student</p>
                 </div>
                 <div class="testimonial-card p-6 rounded-lg text-center">
                     <p class="text-gray-400 italic">"The 100% output guarantee gave me peace of mind. My project worked flawlessly during the final presentation."</p>
-                    <p class="mt-4 font-bold text-white">- Ankit Patel</p>
+                    <p class="mt-4 font-bold text-white">- Tejas Patel</p>
                     <p class="text-sm text-orange-500">Electronics Engineering Student</p>
                 </div>
             </div>
@@ -351,7 +351,7 @@
                 let chatHistory = [];
                 chatHistory.push({ role: "user", parts: [{ text: prompt }] });
                 const payload = { contents: chatHistory };
-                const apiKey = "AIzaSyAJJVY4BhkX4amCF-XxsJYbk9StXbUuhok"; 
+                const apiKey = "AIzaSyCbIRP3DVAAswP6Hfku2TUEDRvrgGfZNbc"; 
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
                 
                 const response = await fetch(apiUrl, {
@@ -432,4 +432,5 @@
 
 </body>
 </html>
+
 
