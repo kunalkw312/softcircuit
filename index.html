@@ -196,14 +196,14 @@
                 <div class="bg-gray-800 rounded-lg overflow-hidden card-glow">
                     <img src="https://placehold.co/600x400/1a202c/ea580c?text=Project+1" alt="Project 1" class="w-full h-48 object-cover">
                     <div class="p-6">
-                        <h3 class="font-bold text-white text-lg">IoT Smart Home</h3>
-                        <p class="text-gray-400 text-sm mt-2">An automated home system controlled via a web interface.</p>
+                        <h3 class="font-bold text-white text-lg">MediGuid</h3>
+                        <p class="text-gray-400 text-sm mt-2">ML based medical recommendations app based on your symptoms.</p>
                     </div>
                 </div>
                 <div class="bg-gray-800 rounded-lg overflow-hidden card-glow">
                     <img src="https://placehold.co/600x400/1a202c/ea580c?text=Project+2" alt="Project 2" class="w-full h-48 object-cover">
                     <div class="p-6">
-                        <h3 class="font-bold text-white text-lg">Robotic Arm</h3>
+                        <h3 class="font-bold text-white text-lg"> Smart plant monitoring system </h3>
                         <p class="text-gray-400 text-sm mt-2">A 5-axis robotic arm for pick and place operations.</p>
                     </div>
                 </div>
@@ -351,7 +351,7 @@
                 let chatHistory = [];
                 chatHistory.push({ role: "user", parts: [{ text: prompt }] });
                 const payload = { contents: chatHistory };
-                const apiKey = "AIzaSyAJXz6E8Yi2KFXeMlZp_DPkf0a9oNo2qhw"; 
+                const apiKey = "AIzaSyAJJVY4BhkX4amCF-XxsJYbk9StXbUuhok"; 
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
                 
                 const response = await fetch(apiUrl, {
@@ -432,3 +432,4 @@
 
 </body>
 </html>
+
