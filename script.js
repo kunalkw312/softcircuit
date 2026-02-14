@@ -42,7 +42,7 @@ generateIdeasBtn.addEventListener('click', async () => {
     const prompt = `Generate a list of 5 innovative engineering project ideas based on the following topic: "${userInput}". Provide a brief one-sentence description for each. Keep it professional.`;
     
     try {
-        const apiKey = "AIzaSyAWGVn0DGFoze7aSskSz5ge0ddcgPpM_0c"; // Change this!
+        const apiKey = "AIzaSyAHusNl1XUrJvaDysUngwd1lFhlc6l5oCA"; // Change this!
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
         
         const response = await fetch(apiUrl, {
