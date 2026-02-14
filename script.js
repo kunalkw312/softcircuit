@@ -10,7 +10,7 @@ mobileMenuButton.addEventListener('click', () => {
 
 // 2. Leaflet Map Initialization
 // Coordinates for Akurdi, Pune [18.64, 73.77]
-var map = L.map('map').setView([18.64, 73.76], 13); 
+var map = L.map('map').setView([18.64, 73.76], 16); 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '© OpenStreetMap'
