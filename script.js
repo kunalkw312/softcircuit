@@ -10,14 +10,14 @@ mobileMenuButton.addEventListener('click', () => {
 
 // 2. Leaflet Map Initialization
 // Coordinates for Akurdi, Pune [18.64, 73.77]
-var map = L.map('map').setView([18.64, 73.77], 13); 
+var map = L.map('map').setView([5774, 3724], 13); 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '© OpenStreetMap'
 }).addTo(map);
 
-var marker = L.marker([18.64, 73.77]).addTo(map);
-marker.bindPopup("<b>SoftCircuit Solutions</b><br>Rutej Park, Akurdi, Pune").openPopup();
+var marker = L.marker([5774, 3724]).addTo(map);
+marker.bindPopup("<b>SoftCircuit Solutions</b><br>Swapnapurti Housing Society, Akurdi, Pune").openPopup();
 
 // 3. Project Idea Generator (Gemini API)
 const generateIdeasBtn = document.getElementById('generate-ideas-btn');
