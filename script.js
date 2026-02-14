@@ -10,13 +10,13 @@ mobileMenuButton.addEventListener('click', () => {
 
 // 2. Leaflet Map Initialization
 // Coordinates for Akurdi, Pune [18.64, 73.77]
-var map = L.map('map').setView([3724, 5774], 13); 
+var map = L.map('map').setView([73.76, -18.64], 13); 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '© OpenStreetMap'
 }).addTo(map);
 
-var marker = L.marker([3724, 5774]).addTo(map);
+var marker = L.marker(73.76, -18.64]).addTo(map);
 marker.bindPopup("<b>SoftCircuit Solutions</b><br>Swapnapurti Housing Society, Akurdi, Pune").openPopup();
 
 // 3. Project Idea Generator (Gemini API)
