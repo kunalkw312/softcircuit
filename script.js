@@ -9,10 +9,10 @@ mobileMenuButton.addEventListener('click', () => {
 });
 
 // 2. Leaflet Map Initialization
-const lat = 18.6401; 
-const lng = 73.7700;
+const lat = 18.6429; 
+const lng = 73.7640;
 
-var map = L.map('map').setView([lat, lng], 15); 
+var map = L.map('map').setView([lat, lng], 13); 
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
