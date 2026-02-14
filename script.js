@@ -20,7 +20,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 var marker = L.marker([lat, lng]).addTo(map);
-marker.bindPopup("<b>SoftCircuit Solutions</b><br>Swapnanagari Society Rd, Akurdi, Pune").openPopup();
+marker.bindPopup("<b>SoftCircuit Solutions</b><br>Head Office, Pune").openPopup();
 
 // 3. Project Idea Generator (Gemini API)
 const generateIdeasBtn = document.getElementById('generate-ideas-btn');
