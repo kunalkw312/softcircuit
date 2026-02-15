@@ -42,11 +42,19 @@ generateIdeasBtn.addEventListener('click', async () => {
     loader.classList.remove('hidden');
     ideasList.innerHTML = '';
 
-    const prompt = `Generate a list of 5 innovative engineering project ideas based on the following topic: "${userInput}". Provide a brief one-sentence description for each. Keep it professional.`;
+    // Access key from config.js
+    const apiKey = typeof CONFIG !== 'undefined' ? CONFIG.GEMINI_API_KEY : '';
+    
+    if (!apiKey) {
+        ideasList.innerHTML = '<p class="text-red-400">Error: API Key not found in config.js</p>';
+        loader.classList.add('hidden');
+        return;
+    }
+
+    const prompt = `Generate a list of 5 innovative engineering project ideas for: "${userInput}". For each, provide a bold title and a short one-sentence description. Use professional language.`;
     
     try {
-        const apiKey = "AIzaSyAHusNl1XUrJvaDysUngwd1lFhlc6l5oCA"; // Change this!
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
         
         const response = await fetch(apiUrl, {
             method: 'POST',
@@ -59,15 +67,21 @@ generateIdeasBtn.addEventListener('click', async () => {
         const result = await response.json();
         
         if (result.candidates && result.candidates[0].content.parts[0].text) {
-            const text = result.candidates[0].content.parts[0].text;
-            // Converting Markdown-style lists to HTML line breaks
-            ideasList.innerHTML = text.replace(/\n/g, '<br>').replace(/\*/g, '');
+            let text = result.candidates[0].content.parts[0].text;
+            
+            // Clean up the formatting
+            let formattedText = text
+                .replace(/\*\*(.*?)\*\*/g, '<b class="text-orange-500">$1</b>') // Bold titles
+                .replace(/\n/g, '<br>') // Line breaks
+                .replace(/\*/g, ''); // Remove bullet stars
+                
+            ideasList.innerHTML = `<div class="space-y-4">${formattedText}</div>`;
         } else {
-            throw new Error("Invalid response format");
+            throw new Error("Invalid response");
         }
     } catch (error) {
         console.error("API Error:", error);
-        ideasList.innerHTML = '<p class="text-red-400">Failed to generate ideas. Please check your internet or API settings.</p>';
+        ideasList.innerHTML = '<p class="text-red-400">Failed to generate ideas. Ensure the API key is restricted to your domain.</p>';
     } finally {
         loader.classList.add('hidden');
     }
