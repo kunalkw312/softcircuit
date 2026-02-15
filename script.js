@@ -54,7 +54,7 @@ generateIdeasBtn.addEventListener('click', async () => {
     const prompt = `Generate a list of 5 innovative engineering project ideas for: "${userInput}". For each, provide a bold title and a short one-sentence description. Use professional language.`;
     
     try {
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
         
         const response = await fetch(apiUrl, {
             method: 'POST',
