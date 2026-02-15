@@ -87,6 +87,7 @@ generateIdeasBtn.addEventListener('click', async () => {
     }
 });
 
+
 // 4. Contact Form Handling (Formspree)
 const contactForm = document.getElementById('contact-form');
 const formConfirmation = document.getElementById('form-confirmation');
@@ -117,3 +118,6 @@ contactForm.addEventListener('submit', async (e) => {
         formError.classList.remove('hidden');
     }
 });
+
+
+
