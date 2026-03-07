@@ -1,4 +1,4 @@
 // config.js
 const CONFIG = {
-    GEMINI_API_KEY: "AIzaSyA3GX1y0TcSWTe4sg6v4R8QbmbOaxMtruc" // Paste your real key here
+    GEMINI_API_KEY: "AIzaSyDck3xpRSuCyP4xiI9do30hAXXP04kip0s" // Paste your real key here
 };
