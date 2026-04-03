@@ -23,6 +23,7 @@ var marker = L.marker([lat, lng]).addTo(map);
 marker.bindPopup("<b>SoftCircuit Solutions</b><br>Head Office, Pune").openPopup();
 
 // 3. Project Idea Generator (Gemini API)
+// 3. Project Idea Generator (Secure Vercel Version)
 const generateIdeasBtn = document.getElementById('generate-ideas-btn');
 const ideaInput = document.getElementById('idea-input');
 const ideaResults = document.getElementById('idea-results');
@@ -37,31 +38,16 @@ generateIdeasBtn.addEventListener('click', async () => {
         return;
     }
 
-    // UI Updates
     ideaResults.classList.remove('hidden');
     loader.classList.remove('hidden');
     ideasList.innerHTML = '';
 
-    // Access key from config.js
-    const apiKey = typeof CONFIG !== 'undefined' ? CONFIG.GEMINI_API_KEY : '';
-    
-    if (!apiKey) {
-        ideasList.innerHTML = '<p class="text-red-400">Error: API Key not found in config.js</p>';
-        loader.classList.add('hidden');
-        return;
-    }
-
-    const prompt = `Generate a list of 5 innovative engineering project ideas for: "${userInput}". For each, provide a bold title and a short one-sentence description. Use professional language.`;
-    
     try {
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-        
-        const response = await fetch(apiUrl, {
+        // We now fetch from our own API route
+        const response = await fetch('/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }]
-            })
+            body: JSON.stringify({ userInput: userInput })
         });
 
         const result = await response.json();
@@ -69,19 +55,19 @@ generateIdeasBtn.addEventListener('click', async () => {
         if (result.candidates && result.candidates[0].content.parts[0].text) {
             let text = result.candidates[0].content.parts[0].text;
             
-            // Clean up the formatting
+            // Re-using your existing formatting logic
             let formattedText = text
-                .replace(/\*\*(.*?)\*\*/g, '<b class="text-orange-500">$1</b>') // Bold titles
-                .replace(/\n/g, '<br>') // Line breaks
-                .replace(/\*/g, ''); // Remove bullet stars
+                .replace(/\*\*(.*?)\*\*/g, '<b class="text-orange-500">$1</b>') 
+                .replace(/\n/g, '<br>') 
+                .replace(/\*/g, ''); 
                 
             ideasList.innerHTML = `<div class="space-y-4">${formattedText}</div>`;
         } else {
-            throw new Error("Invalid response");
+            throw new Error("Invalid API response");
         }
     } catch (error) {
-        console.error("API Error:", error);
-        ideasList.innerHTML = '<p class="text-red-400">Failed to generate ideas. Ensure the API key is restricted to your domain.</p>';
+        console.error("Frontend Error:", error);
+        ideasList.innerHTML = '<p class="text-red-400">Connection error. Please try again later.</p>';
     } finally {
         loader.classList.add('hidden');
     }
