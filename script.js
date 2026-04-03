@@ -22,8 +22,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 var marker = L.marker([lat, lng]).addTo(map);
 marker.bindPopup("<b>SoftCircuit Solutions</b><br>Head Office, Pune").openPopup();
 
-// 3. Project Idea Generator (Gemini API)
-// 3. Project Idea Generator (Secure Vercel Version)
+// 3. Project Idea Generator (Secure Vercel API with Gemini 1.5 Flash-Lite)
 const generateIdeasBtn = document.getElementById('generate-ideas-btn');
 const ideaInput = document.getElementById('idea-input');
 const ideaResults = document.getElementById('idea-results');
@@ -38,12 +37,13 @@ generateIdeasBtn.addEventListener('click', async () => {
         return;
     }
 
+    // UI Updates
     ideaResults.classList.remove('hidden');
     loader.classList.remove('hidden');
     ideasList.innerHTML = '';
 
     try {
-        // We now fetch from our own API route
+        // Calling your internal Vercel API instead of Google directly
         const response = await fetch('/api/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -52,27 +52,23 @@ generateIdeasBtn.addEventListener('click', async () => {
 
         const result = await response.json();
         
-        if (result.candidates && result.candidates[0].content.parts[0].text) {
-            let text = result.candidates[0].content.parts[0].text;
-            
-            // Re-using your existing formatting logic
-            let formattedText = text
+        if (result.text) {
+            // Formatting: Bold titles in orange and new lines to breaks
+            let formattedText = result.text
                 .replace(/\*\*(.*?)\*\*/g, '<b class="text-orange-500">$1</b>') 
-                .replace(/\n/g, '<br>') 
-                .replace(/\*/g, ''); 
+                .replace(/\n/g, '<br>');
                 
-            ideasList.innerHTML = `<div class="space-y-4">${formattedText}</div>`;
+            ideasList.innerHTML = `<div class="space-y-4 text-gray-300">${formattedText}</div>`;
         } else {
-            throw new Error("Invalid API response");
+            throw new Error("Invalid response from API");
         }
     } catch (error) {
-        console.error("Frontend Error:", error);
-        ideasList.innerHTML = '<p class="text-red-400">Connection error. Please try again later.</p>';
+        console.error("API Error:", error);
+        ideasList.innerHTML = '<p class="text-red-400">Connection error. Please ensure the domain is fully propagated.</p>';
     } finally {
         loader.classList.add('hidden');
     }
 });
-
 
 // 4. Contact Form Handling (Formspree)
 const contactForm = document.getElementById('contact-form');
@@ -104,6 +100,3 @@ contactForm.addEventListener('submit', async (e) => {
         formError.classList.remove('hidden');
     }
 });
-
-
-
