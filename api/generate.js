@@ -1,34 +1,46 @@
 export default async function handler(req, res) {
-  // Only allow POST requests for security
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { userInput } = req.body;
-  const apiKey = process.env.GEMINI_API_KEY; // This stays hidden on Vercel's servers
+  const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: 'Server configuration error: API Key missing' });
+    return res.status(500).json({ error: 'API Key missing in Vercel settings' });
   }
 
-  const prompt = `Generate a list of 5 innovative engineering project ideas for: "${userInput}". For each, provide a bold title and a short one-sentence description. Use professional language.`;
+  // Pointing to the "Flash-Lite" model for ultra-fast response
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-lite:generateContent?key=${apiKey}`;
 
   try {
-    // Calling Gemini 1.5 Flash for better performance
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-    
     const response = await fetch(apiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
+        contents: [{ 
+          parts: [{ 
+            text: `Act as an expert engineering mentor. Generate exactly 5 innovative project ideas for: "${userInput}". 
+            Format: **Project Title**: One short sentence description. 
+            Keep it extremely concise to ensure fast generation.` 
+          }] 
+        }],
+        generationConfig: {
+          maxOutputTokens: 400,
+          temperature: 0.7
+        }
       })
     });
 
     const data = await response.json();
-    return res.status(200).json(data);
+
+    if (data.candidates && data.candidates[0].content.parts[0].text) {
+        return res.status(200).json({ text: data.candidates[0].content.parts[0].text });
+    } else {
+        throw new Error("Invalid response from Gemini");
+    }
   } catch (error) {
-    console.error("Gemini API Error:", error);
-    return res.status(500).json({ error: 'Failed to communicate with Gemini API' });
+    console.error("Gemini Error:", error);
+    return res.status(500).json({ error: 'Failed to reach Gemini API' });
   }
 }
