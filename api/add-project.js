@@ -1,20 +1,21 @@
 import { sql } from '@vercel/postgres';
 
-export default async function handler(req, res) {
-    // Only allow POST requests
-    if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method Not Allowed' });
-    }
+export const config = {
+    runtime: 'edge',
+};
 
-    const { password, title, category, type, image, desc } = req.body;
-
-    // Secure password check using your Vercel Environment Variable
-    if (password !== process.env.ADMIN_PASSWORD) {
-        return res.status(401).json({ message: 'Unauthorized: Incorrect Password' });
+export default async function handler(request) {
+    if (request.method !== 'POST') {
+        return new Response(JSON.stringify({ message: 'Method Not Allowed' }), { status: 405 });
     }
 
     try {
-        // 1. Create the database table if it doesn't exist yet
+        const { password, title, category, type, image, desc } = await request.json();
+
+        if (password !== process.env.ADMIN_PASSWORD) {
+            return new Response(JSON.stringify({ message: 'Unauthorized: Incorrect Password' }), { status: 401 });
+        }
+
         await sql`
             CREATE TABLE IF NOT EXISTS projects (
                 id SERIAL PRIMARY KEY,
@@ -27,16 +28,20 @@ export default async function handler(req, res) {
             );
         `;
 
-        // 2. Insert the new project into the table
         await sql`
             INSERT INTO projects (title, category, type, image, desc)
             VALUES (${title}, ${category}, ${type}, ${image}, ${desc});
         `;
 
-        return res.status(200).json({ message: 'Project successfully added to the database!' });
+        return new Response(JSON.stringify({ message: 'Project successfully added!' }), { 
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
         
     } catch (error) {
-        console.error('Database Error:', error);
-        return res.status(500).json({ message: 'Failed to add project', error: error.message });
+        return new Response(JSON.stringify({ message: 'Failed to add project', error: error.message }), { 
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
 }
