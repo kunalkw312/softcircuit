@@ -1,0 +1,10 @@
+{
+  "installCommand": "npm install",
+  "buildCommand": "echo 'Static build complete'",
+  "functions": {
+    "api/**/*.js": {
+      "includeFiles": "node_modules/**"
+    }
+  }
+}
+
