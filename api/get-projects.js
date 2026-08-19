@@ -1,30 +1,37 @@
 import { sql } from '@vercel/postgres';
 
-export default async function handler(req, res) {
-    // Only allow GET requests
-    if (req.method !== 'GET') {
-        return res.status(405).json({ message: 'Method Not Allowed' });
+// This forces Vercel to use the Edge compiler, bypassing the bug
+export const config = {
+    runtime: 'edge',
+};
+
+export default async function handler(request) {
+    if (request.method !== 'GET') {
+        return new Response(JSON.stringify({ message: 'Method Not Allowed' }), { status: 405 });
     }
 
     try {
-        // Fetch all projects from the database, ordering by the newest first
         const { rows } = await sql`
             SELECT * FROM projects 
             ORDER BY created_at DESC;
         `;
 
-        // Send the data back to the frontend
-        return res.status(200).json({ projects: rows });
+        return new Response(JSON.stringify({ projects: rows }), { 
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
         
     } catch (error) {
-        console.error('Database Error:', error);
-        
-        // If the table doesn't exist yet (because no projects have been added), 
-        // safely return an empty array instead of throwing an error.
         if (error.message.includes('relation "projects" does not exist')) {
-            return res.status(200).json({ projects: [] });
+            return new Response(JSON.stringify({ projects: [] }), { 
+                status: 200,
+                headers: { 'Content-Type': 'application/json' }
+            });
         }
         
-        return res.status(500).json({ message: 'Failed to fetch projects', error: error.message });
+        return new Response(JSON.stringify({ message: 'Failed to fetch', error: error.message }), { 
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
     }
 }
