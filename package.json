@@ -1,0 +1,11 @@
+{
+  "name": "softcircuit-solutions",
+  "version": "1.0.0",
+  "description": "SoftCircuit Solutions Website and Admin Panel",
+  "scripts": {
+    "start": "echo 'Static site with Vercel Serverless Functions'"
+  },
+  "dependencies": {
+    "@vercel/postgres": "^0.9.0"
+  }
+}
