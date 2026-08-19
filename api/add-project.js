@@ -19,6 +19,7 @@ export default async function handler(request) {
         // Connect to the Neon Postgres database
         const sql = neon(process.env.POSTGRES_URL);
 
+        // Put "desc" in double quotes so Postgres knows it is a column, not the sorting keyword
         await sql`
             CREATE TABLE IF NOT EXISTS projects (
                 id SERIAL PRIMARY KEY,
@@ -26,13 +27,13 @@ export default async function handler(request) {
                 category VARCHAR(255) NOT NULL,
                 type VARCHAR(50) NOT NULL,
                 image TEXT NOT NULL,
-                desc TEXT NOT NULL,
+                "desc" TEXT NOT NULL,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );
         `;
 
         await sql`
-            INSERT INTO projects (title, category, type, image, desc)
+            INSERT INTO projects (title, category, type, image, "desc")
             VALUES (${title}, ${category}, ${type}, ${image}, ${desc});
         `;
 
