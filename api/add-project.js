@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { neon } from '@neondatabase/serverless';
 
 export const config = {
     runtime: 'edge',
@@ -15,6 +15,9 @@ export default async function handler(request) {
         if (password !== process.env.ADMIN_PASSWORD) {
             return new Response(JSON.stringify({ message: 'Unauthorized: Incorrect Password' }), { status: 401 });
         }
+
+        // Connect to the Neon Postgres database
+        const sql = neon(process.env.POSTGRES_URL);
 
         await sql`
             CREATE TABLE IF NOT EXISTS projects (
