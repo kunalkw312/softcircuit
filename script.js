@@ -4,20 +4,25 @@
 const mobileMenuButton = document.getElementById('mobile-menu-button');
 const mobileMenu = document.getElementById('mobile-menu');
 
-mobileMenuButton.addEventListener('click', () => {
-    mobileMenu.classList.toggle('hidden');
-});
+if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+}
 
 // 2. Leaflet Map Initialization
-const lat = 18.6429; 
-const lng = 73.7640;
-var map = L.map('map').setView([lat, lng], 13); 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap'
-}).addTo(map);
-var marker = L.marker([lat, lng]).addTo(map);
-marker.bindPopup("<b>SoftCircuit Solutions</b><br>Head Office, Pune").openPopup();
+const mapElement = document.getElementById('map');
+if (mapElement) {
+    const lat = 18.6429; 
+    const lng = 73.7640;
+    var map = L.map('map').setView([lat, lng], 13); 
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+    var marker = L.marker([lat, lng]).addTo(map);
+    marker.bindPopup("<b>SoftCircuit Solutions</b><br>Head Office, Pune").openPopup();
+}
 
 // 3. Project Idea Generator (Gemini Integration)
 const generateIdeasBtn = document.getElementById('generate-ideas-btn');
@@ -100,7 +105,7 @@ if (contactForm) {
     });
 }
 
-// 5. Modal Logic (Moved from HTML)
+// 5. Modal Logic
 function openModal(title, category, img, desc) {
     document.getElementById('modalTitle').innerText = title;
     document.getElementById('modalCategory').innerText = category;
@@ -123,89 +128,58 @@ function closeModal() {
 }
 
 // =========================================================================
-// 6. DYNAMIC PROJECTS & ADMIN PANEL LOGIC (NEW)
+// 6. DYNAMIC PROJECTS & ADMIN PANEL LOGIC 
 // =========================================================================
 
-// Temporary data storage until the Vercel database is connected
-let currentProjects = [
-    {
-        title: 'MediGuid',
-        category: 'Medical Recommendation System',
-        type: 'academic',
-        image: 'https://res.cloudinary.com/dowhvdkjh/image/upload/v1770194907/Screenshot_20260204-124918_ygv1qo.png',
-        desc: 'Custom ML based medical recommendations app based on your symptoms.'
-    },
-    {
-        title: 'Smart Plant Monitoring',
-        category: 'IoT Agriculture System',
-        type: 'academic',
-        image: 'https://res.cloudinary.com/dowhvdkjh/image/upload/v1770194908/IMG-20260204-WA0019_tqgrzu.jpg',
-        desc: 'Real-time soil moisture, temperature, and humidity tracking on your smartphone via ESP8266.'
-    },
-    {
-        title: 'Sun Tracking Solar',
-        category: 'IoT Renewable Energy',
-        type: 'academic',
-        image: 'https://res.cloudinary.com/dowhvdkjh/image/upload/v1771172855/IMG-20260215-WA0005_2_gfdhro.jpg',
-        desc: 'Maximizes solar efficiency using LDR sensors to move panels automatically towards the sun.'
-    },
-    {
-        title: 'Smart Water TDS',
-        category: 'Water Quality System',
-        type: 'academic',
-        image: 'https://res.cloudinary.com/dowhvdkjh/image/upload/v1770195080/IMG_20260116_174159147_kbw425.jpg',
-        desc: 'Smart TDS control system that lets monitor the current TDS of the water and control the water flow accordingly.'
-    },
-    {
-        title: 'Enterprise ERP System',
-        category: 'Business Operations',
-        type: 'commercial',
-        image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop',
-        desc: 'Comprehensive Enterprise Resource Planning system tailored for large-scale operations and inventory management.'
-    },
-    {
-        title: 'Real Estate CRM',
-        category: 'Customer Management',
-        type: 'commercial',
-        image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=2273&auto=format&fit=crop',
-        desc: 'Lead generation, client tracking, and invoice generation dashboard built specifically for real estate agencies.'
-    }
-];
-
-// Function to render projects to the frontend grids
-function renderProjects() {
+// Fetch and render projects from Vercel Postgres
+async function fetchAndRenderProjects() {
     const commercialGrid = document.getElementById('commercial-grid');
     const academicGrid = document.getElementById('academic-grid');
     
     if(!commercialGrid || !academicGrid) return;
-    
-    commercialGrid.innerHTML = '';
-    academicGrid.innerHTML = '';
 
-    currentProjects.forEach(proj => {
-        const cardHTML = `
-            <div class="bg-gray-800 rounded-xl overflow-hidden card-glow tech-border flex flex-col" 
-                 onclick="openModal('${proj.title}', '${proj.category}', '${proj.image}', '${proj.desc}')">
-                <div class="bg-black flex items-center justify-center aspect-video">
-                    <img src="${proj.image}" class="max-h-full max-w-full object-cover">
-                </div>
-                <div class="p-6 text-center">
-                    <h3 class="font-bold text-white text-lg">${proj.title}</h3>
-                    <p class="text-gray-400 text-xs mt-2 truncate">${proj.desc}</p>
-                </div>
-            </div>
-        `;
-        
-        if (proj.type === 'commercial') {
-            commercialGrid.innerHTML += cardHTML;
-        } else {
-            academicGrid.innerHTML += cardHTML;
+    try {
+        const response = await fetch('/api/get-projects');
+        const data = await response.json();
+        const projects = data.projects || [];
+
+        commercialGrid.innerHTML = '';
+        academicGrid.innerHTML = '';
+
+        if (projects.length === 0) {
+            commercialGrid.innerHTML = '<div class="col-span-full text-center text-gray-500">No projects added yet. Use the Admin panel to add your first commercial project.</div>';
+            academicGrid.innerHTML = '<div class="col-span-full text-center text-gray-500">No projects added yet. Use the Admin panel to add your first academic project.</div>';
+            return;
         }
-    });
+
+        projects.forEach(proj => {
+            const cardHTML = `
+                <div class="bg-gray-800 rounded-xl overflow-hidden card-glow tech-border flex flex-col" 
+                     onclick="openModal('${proj.title}', '${proj.category}', '${proj.image}', '${proj.desc}')">
+                    <div class="bg-black flex items-center justify-center aspect-video">
+                        <img src="${proj.image}" class="max-h-full max-w-full object-cover">
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="font-bold text-white text-lg">${proj.title}</h3>
+                        <p class="text-gray-400 text-xs mt-2 truncate">${proj.desc}</p>
+                    </div>
+                </div>
+            `;
+            
+            if (proj.type === 'commercial') {
+                commercialGrid.innerHTML += cardHTML;
+            } else {
+                academicGrid.innerHTML += cardHTML;
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching projects:", error);
+        commercialGrid.innerHTML = '<div class="col-span-full text-center text-red-500">Failed to load projects.</div>';
+        academicGrid.innerHTML = '<div class="col-span-full text-center text-red-500">Failed to load projects.</div>';
+    }
 }
 
-// Initial render
-document.addEventListener('DOMContentLoaded', renderProjects);
+document.addEventListener('DOMContentLoaded', fetchAndRenderProjects);
 
 // Admin Routing Logic
 const mainContent = document.getElementById('main-content');
@@ -214,15 +188,19 @@ const adminPanel = document.getElementById('admin-panel');
 
 function handleRouting() {
     if (window.location.hash === '#admin') {
-        mainContent.classList.add('hidden');
-        mainHeader.classList.add('hidden');
-        adminPanel.classList.remove('hidden');
-        adminPanel.classList.add('flex');
+        if(mainContent) mainContent.classList.add('hidden');
+        if(mainHeader) mainHeader.classList.add('hidden');
+        if(adminPanel) {
+            adminPanel.classList.remove('hidden');
+            adminPanel.classList.add('flex');
+        }
     } else {
-        mainContent.classList.remove('hidden');
-        mainHeader.classList.remove('hidden');
-        adminPanel.classList.add('hidden');
-        adminPanel.classList.remove('flex');
+        if(mainContent) mainContent.classList.remove('hidden');
+        if(mainHeader) mainHeader.classList.remove('hidden');
+        if(adminPanel) {
+            adminPanel.classList.add('hidden');
+            adminPanel.classList.remove('flex');
+        }
     }
 }
 
@@ -232,38 +210,106 @@ window.addEventListener('load', handleRouting);
 // Admin Panel Interactions
 const loginBtn = document.getElementById('login-btn');
 const adminPasswordInput = document.getElementById('admin-password');
-const loginError = document.getElementById('login-error');
 const adminLoginBox = document.getElementById('admin-login');
 const adminDashboard = document.getElementById('admin-dashboard');
 const logoutBtn = document.getElementById('logout-btn');
+const loginError = document.getElementById('login-error');
 
-loginBtn.addEventListener('click', () => {
-    const pwd = adminPasswordInput.value;
-    // Hardcoded password as requested (Will be moved to secure backend API soon)
-    if (pwd === 'kunal123') { 
-        adminLoginBox.classList.add('hidden');
-        adminDashboard.classList.remove('hidden');
-        loginError.classList.add('hidden');
-    } else {
-        loginError.classList.remove('hidden');
-    }
-});
+let currentAdminPassword = '';
 
-logoutBtn.addEventListener('click', () => {
-    adminPasswordInput.value = '';
-    adminDashboard.classList.add('hidden');
-    adminLoginBox.classList.remove('hidden');
-    window.location.hash = ''; // Return to home page
-});
+if (loginBtn) {
+    loginBtn.addEventListener('click', () => {
+        const pwd = adminPasswordInput.value.trim();
+        if (pwd) {
+            currentAdminPassword = pwd;
+            // Proceed to dashboard; verification happens securely on upload
+            adminLoginBox.classList.add('hidden');
+            adminDashboard.classList.remove('hidden');
+            if(loginError) loginError.classList.add('hidden');
+        }
+    });
+}
 
-// Admin Dashboard Form Upload Logic (Mockup for now)
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        currentAdminPassword = '';
+        adminPasswordInput.value = '';
+        adminDashboard.classList.add('hidden');
+        adminLoginBox.classList.remove('hidden');
+        window.location.hash = ''; 
+    });
+}
+
+// Admin Dashboard Form Upload Logic
 const addProjectForm = document.getElementById('add-project-form');
 const uploadStatus = document.getElementById('upload-status');
+const uploadBtn = document.getElementById('upload-btn');
 
-addProjectForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    uploadStatus.textContent = 'Preparing upload sequence... Backend connection required.';
-    uploadStatus.className = 'text-center mt-4 text-sm font-bold text-yellow-400';
-    
-    // In the next step, we will connect this logic to fetch('/api/add-project', {...})
-});
+if (addProjectForm) {
+    addProjectForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        uploadStatus.textContent = 'Uploading...';
+        uploadStatus.className = 'text-center mt-4 text-sm font-bold text-yellow-400';
+        uploadBtn.disabled = true;
+
+        const title = document.getElementById('proj-title').value;
+        const type = document.getElementById('proj-type').value;
+        const category = type === 'commercial' ? 'Business Solutions' : 'Engineering Project';
+        const desc = document.getElementById('proj-desc').value;
+        const imageFile = document.getElementById('proj-image').files[0];
+
+        // Convert image file to Base64 string for database storage
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            const base64Image = reader.result;
+
+            try {
+                const response = await fetch('/api/add-project', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        password: currentAdminPassword,
+                        title,
+                        category,
+                        type,
+                        image: base64Image,
+                        desc
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    uploadStatus.textContent = 'Project successfully added!';
+                    uploadStatus.className = 'text-center mt-4 text-sm font-bold text-green-400';
+                    addProjectForm.reset();
+                    fetchAndRenderProjects(); 
+                } else {
+                    uploadStatus.textContent = result.message || 'Upload failed.';
+                    uploadStatus.className = 'text-center mt-4 text-sm font-bold text-red-500';
+                    
+                    if (response.status === 401) {
+                        setTimeout(() => {
+                            if(logoutBtn) logoutBtn.click();
+                            if(loginError) {
+                                loginError.textContent = 'Unauthorized: Incorrect Password';
+                                loginError.classList.remove('hidden');
+                            }
+                        }, 2000);
+                    }
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                uploadStatus.textContent = 'Connection error.';
+                uploadStatus.className = 'text-center mt-4 text-sm font-bold text-red-500';
+            } finally {
+                uploadBtn.disabled = false;
+            }
+        };
+        
+        if (imageFile) {
+            reader.readAsDataURL(imageFile);
+        }
+    });
+}
