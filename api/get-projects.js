@@ -1,6 +1,5 @@
-import { sql } from '@vercel/postgres';
+import { neon } from '@neondatabase/serverless';
 
-// This forces Vercel to use the Edge compiler, bypassing the bug
 export const config = {
     runtime: 'edge',
 };
@@ -11,7 +10,10 @@ export default async function handler(request) {
     }
 
     try {
-        const { rows } = await sql`
+        // Connect to the Neon Postgres database
+        const sql = neon(process.env.POSTGRES_URL);
+        
+        const rows = await sql`
             SELECT * FROM projects 
             ORDER BY created_at DESC;
         `;
