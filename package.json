@@ -1,11 +1,23 @@
 {
   "name": "softcircuit-solutions",
   "version": "1.0.0",
-  "description": "SoftCircuit Solutions Website and Admin Panel",
+  "description": "SoftCircuit Solutions Website and Admin Panel - Engineering Projects, IoT Internships, Enterprise Software",
+  "type": "module",
   "scripts": {
-    "start": "echo 'Static site with Vercel Serverless Functions'"
+    "dev": "npx serve .",
+    "build": "echo 'Static build complete'",
+    "lint": "npx eslint . --ext .js,.html",
+    "format": "npx prettier --write ."
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.4"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.0",
+    "serve": "^14.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
